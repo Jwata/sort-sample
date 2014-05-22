@@ -37,7 +37,8 @@ public class Sort {
 
         // execBubbleSort(numbers);
         // execQuickSort(numbers, 0, arraySize - 1);
-        execBucketSort(numbers, min, max);
+        // execBucketSort(numbers, min, max);
+        execHeapSort(numbers);
 
         long stop = System.nanoTime();
 
@@ -123,6 +124,61 @@ public class Sort {
                 numbers[j] = bucket[i].shift();
                 j++;
             }
+        }
+
+        return;
+    }
+
+    public static void execHeapSort(int numbers[])
+    {
+        int arraySize = numbers.length;
+        int heap[] = new int[arraySize];
+
+        // heap node num
+        int num = 0;
+
+        // build heap structure
+        for (int target = 0; target < arraySize; target++) {
+            heap[num] = numbers[target];
+            num++;
+
+            int i = num;
+            int j = i / 2;
+
+            int tmp;
+            while (i > 1 && heap[i - 1] < heap[j - 1]) {
+                tmp = heap[i - 1];
+                heap[i - 1] = heap[j - 1];
+                heap[j - 1] = tmp;
+
+                i = j;
+                j = i / 2;
+            }
+        }
+
+        // build sorted numbers
+        int root;
+        for (int target = 0; target < arraySize; target++) {
+            root = heap[0];
+            num--;
+            heap[0] = heap[num];
+
+            int i = 1, j = i * 2;
+            while (j <= num) {
+                if(j + 1 <= num && heap[j - 1] > heap[j]) j++;
+
+                if (heap[i - 1] > heap[j - 1]) {
+                    int temp = heap[i - 1];
+                    heap[i - 1] = heap[j - 1];
+                    heap[j - 1] = temp;
+
+                }
+
+                i = j;
+                j = i * 2;
+            }
+
+            numbers[target] = root;
         }
 
         return;
