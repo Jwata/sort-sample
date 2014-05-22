@@ -1,27 +1,43 @@
 import java.util.*;
 import java.text.NumberFormat;
 
+import util.DListInt;
+
 public class Sort {
     public static void main (String [] args) {
-        int arraySize = 100;
+        int arraySize = 50;
         int numbers[] = new int[arraySize];
 
         Random rand = new Random();
 
         int num;
+        int min = 0;
+        int max = 0;
         for (int i = 0; i < arraySize; i++) {
-            num = rand.nextInt();
+            num = rand.nextInt(100);
             if (num < 0) {
                 num *= -1;
             }
 
             numbers[i] = num;
+
+            if (i == 0) {
+                min = max = num;
+            } else {
+                if (num < min) {
+                    min = num;
+                }
+                if (num > max) {
+                    max = num;
+                }
+            }
         }
 
         long start = System.nanoTime();
 
         // execBubbleSort(numbers);
-        execQuickSort(numbers, 0, arraySize - 1);
+        // execQuickSort(numbers, 0, arraySize - 1);
+        execBucketSort(numbers, min, max);
 
         long stop = System.nanoTime();
 
@@ -86,5 +102,29 @@ public class Sort {
 
         execQuickSort(numbers, left, rightPointer);
         execQuickSort(numbers, leftPointer, right);
+
+        return;
+    }
+
+    public static void execBucketSort(int numbers[], int min, int max) {
+        int arraySize = numbers.length;
+
+        DListInt[] bucket = new DListInt[max - min + 1];
+        for (int i = 0; i < bucket.length; i++) {
+            bucket[i] = new DListInt();
+        }
+
+        for (int i = 0; i < arraySize; i++) {
+            bucket[numbers[i] - min].add(numbers[i]);
+        }
+
+        for (int i = 0, j = 0; i < bucket.length; i++) {
+            while (bucket[i].num > 0) {
+                numbers[j] = bucket[i].shift();
+                j++;
+            }
+        }
+
+        return;
     }
 }
